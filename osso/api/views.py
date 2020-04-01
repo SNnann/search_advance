@@ -201,7 +201,7 @@ class LevelSearchAdvance(APIView):
 	permission_classes = [permissions.AllowAny]
 
 	def post(self, request):
-		now = timezone.now()
+		now = datetime.now()
 		#a0="อาหาร"
 		#a1="สถานที่"    
 		#a2="ขออนุญาตสถานที่ กรณีเข้าข่ายโรงงาน (เครื่องจักรมากกว่า 50 เครื่อง)"
@@ -210,29 +210,32 @@ class LevelSearchAdvance(APIView):
 		list_data = []
 		list2 = []
 		list3 = []
-		if 'a0' in request.POST:
-			a0 = request.POST.get('a0')
+		print(request.data)
+		if 'a0' in request.data:
+			a0 = request.data['a0']
 		else:
 			a0 = ''
 
-		if 'a1' in request.POST:
-			a1 = request.POST.get('a1')
+		if 'a1' in request.data:
+			a1 = request.data['a1']
 		else:
 			a1 = ''
 		
-		if 'a2' in request.POST:
-			a2 = request.POST.get('a2')
+		if 'a2' in request.data:
+			a2 = request.data['a2']
 		else:
 			a2 = ''
 		
-		if 'a3' in request.POST:
-			a3 = request.POST.get('a3')
+		if 'a3' in request.data:
+			a3 = request.data['a3']
 		else:
 			a3 = ''
 		if 'time' in request.POST:
 			time = request.POST.get('time')
 		else:
-			time = 0
+			time = 1
+
+		print(time)
 		
 		def three_month_ago(value):
 			delta = timedelta(days=90)
@@ -240,16 +243,22 @@ class LevelSearchAdvance(APIView):
 		def six_month_ago(value):
 			delta = timedelta(days=180)
 			return value - delta
-		def all_month_ago(value):
-			return value
 		
-		t_time = now
+		t_time = 0
+		check = ""
 		if time == 1:
 			t_time = three_month_ago(now)
+			check = "time=1"
 		elif time == 2:
 			t_time = six_month_ago(now)
+			check = "time=2"
 		else:
-			t_time = all_month_ago(now)
+			t_time = now
+			check = "time=3"
+
+		print(check)
+		print(now)
+		print(t_time)
 
 		if a0 != "":
 			if a1 != "":
@@ -265,15 +274,23 @@ class LevelSearchAdvance(APIView):
 						#print(a3)
 						list_data.append(a3)
 
-						data_level0 = Level.objects.filter(group=a0, level_name__contains=a1, Date__gte=t_time)
+						data_level0 = Level.objects.filter(group=a0, level_name=a0)
+						data_level1 = Level.objects.filter(group=a0, level_name__contains=a1, Date__gte=t_time)
 						print(data_level0)
+
 						for x in data_level0:
+							if a0 == x.level_name:
+								list3.append(x)
+
+						for x in data_level1:
 							for y in x.level_link.all():
 								if a2 in y.level_name:
 									list2.append(y)
+									list3.append(x)
 						for x in list2:
 							for y in x.level_link.all():
 								if a3 in y.level_name:
+									list3.append(x)
 									list3.append(y)
 
 						if len(list3) != 0:
@@ -284,7 +301,7 @@ class LevelSearchAdvance(APIView):
 									'id': x.level_id,
 									'name': x.level_name,
 									'ref': x.level_ref,
-									'link': '/level1/' + a3 + '/drill/' +str(x.level_id),
+									'link': '/level1/' + x.level_name + '/drill/' +str(x.level_id),
 									'state': x.level_state,
 								})
 							linkdata = []
@@ -318,10 +335,17 @@ class LevelSearchAdvance(APIView):
 						#print(a2)
 						list_data.append(a2)
 
-						data_level0 = Level.objects.filter(group=a0, level_name__contains=a1, Date__gte = t_time)
+						data_level0 = Level.objects.filter(group=a0, level_name__contains=a0)
+						data_level1 = Level.objects.filter(group=a0, level_name__contains=a1, Date__gte=t_time)
+
 						for x in data_level0:
+							if a0 == x.level_name:
+								list3.append(x)
+
+						for x in data_level1:
 							for y in x.level_link.all():
 								if a2 in y.level_name:
+									list3.append(x)
 									list3.append(y)
 						
 						if len(list3) != 0:
@@ -334,7 +358,7 @@ class LevelSearchAdvance(APIView):
 										'id': x.level_id,
 										'name': x.level_name,
 										'ref': x.level_ref,
-										'link': '/level1/' + a2 + '/drill/' + str(x.level_id),
+										'link': '/level1/' + x.level_name + '/drill/' + str(x.level_id),
 										'state': x.level_state,
 									})
 								
@@ -366,10 +390,11 @@ class LevelSearchAdvance(APIView):
 					#print(a1)
 					list_data.append(a1)
 
-					data_level0 = Level.objects.filter(group=a0, level_name__contains=a0, Date__gte = t_time)
+					data_level0 = Level.objects.filter(group=a0, level_name=a0, Date__gte=t_time)
 					for x in data_level0:
 						for y in x.level_link.all():
 							if a1 in y.level_name:
+								list3.append(x)
 								list3.append(y)
 					
 					if len(list3) != 0:
@@ -380,7 +405,7 @@ class LevelSearchAdvance(APIView):
 								'id': x.level_id,
 								'name': x.level_name,
 								'ref': x.level_ref,
-								'link': '/level1/' + a1 + '/drill/' + str(x.level_id),
+								'link': '/level1/' + x.level_name + '/drill/' + str(x.level_id),
 								'state': x.level_state
 							})
 						linkdata = []
@@ -406,12 +431,10 @@ class LevelSearchAdvance(APIView):
 						return Response(data)
 
 			else:
-				print("level0")
-				#print(a0) 
-				list_data.append(a0)
-
-				data_level0 = Level.objects.filter(group=a0, level_name__contains=a0)
-
+				#print(a0)
+				data_level0 = Level.objects.filter(group=a0, level_name__contains=a0, Date__gte=t_time)
+				print(t_time)
+				print(data_level0)
 				for x in data_level0:
 					if a0 == x.level_name:
 						list3.append(x)
@@ -452,4 +475,6 @@ class LevelSearchAdvance(APIView):
 					return Response(data)
 		else:
 			print("user error")
-		
+			data = []
+			print(7)
+			return Response(data)
