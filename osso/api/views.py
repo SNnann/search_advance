@@ -253,7 +253,7 @@ class LevelSearchAdvance(APIView):
 			t_time = six_month_ago(now)
 			check = "time=2"
 		elif time == 0:
-			t_time = datetime(2019,1,1)
+			t_time = datetime(20,1,1)
 			check = "time=3"
 
 		print(check)
@@ -303,6 +303,7 @@ class LevelSearchAdvance(APIView):
 									'ref': x.level_ref,
 									'link': '/level1/' + x.level_name + '/drill/' +str(x.level_id),
 									'state': x.level_state,
+									'date': x.Date
 								})
 							linkdata = []
 							for x in Document.objects.filter(document_name__contains=list3):
@@ -360,6 +361,7 @@ class LevelSearchAdvance(APIView):
 										'ref': x.level_ref,
 										'link': '/level1/' + x.level_name + '/drill/' + str(x.level_id),
 										'state': x.level_state,
+										'date': x.Date
 									})
 								
 								linkdata = []
@@ -406,7 +408,8 @@ class LevelSearchAdvance(APIView):
 								'name': x.level_name,
 								'ref': x.level_ref,
 								'link': '/level1/' + x.level_name + '/drill/' + str(x.level_id),
-								'state': x.level_state
+								'state': x.level_state,
+								'date': x.Date
 							})
 						linkdata = []
 						for x in Document.objects.filter(document_name__contains=list3):
@@ -449,6 +452,7 @@ class LevelSearchAdvance(APIView):
 							'ref': x.level_ref,
 							'link': '/level1/' + a0 + '/drill/' + str(x.level_id),
 							'state': x.level_state,
+							'date': x.Date
 						})
 					
 					linkdata = []
