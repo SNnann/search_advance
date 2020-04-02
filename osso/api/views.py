@@ -233,7 +233,7 @@ class LevelSearchAdvance(APIView):
 		if 'time' in request.POST:
 			time = request.POST.get('time')
 		else:
-			time = 1
+			time = 0
 
 		print(time)
 		
@@ -252,8 +252,8 @@ class LevelSearchAdvance(APIView):
 		elif time == 2:
 			t_time = six_month_ago(now)
 			check = "time=2"
-		else:
-			t_time = now
+		elif time == 0:
+			t_time = datetime(2019,1,1)
 			check = "time=3"
 
 		print(check)
@@ -447,7 +447,7 @@ class LevelSearchAdvance(APIView):
 							'id': x.level_id,
 							'name': x.level_name,
 							'ref': x.level_ref,
-							'link': '/level19/' + a0 + '/drill/' + str(x.level_id),
+							'link': '/level1/' + a0 + '/drill/' + str(x.level_id),
 							'state': x.level_state,
 						})
 					
