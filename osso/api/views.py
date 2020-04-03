@@ -150,8 +150,11 @@ class LevelDrill(APIView):
     def get(self, request,id, format=None):
         data = Level.objects.get(level_id=id)
         if data != None:
+
             if data.level_link.all().count() > 0:
                 linkdata = []
+                data.rank += 1
+                data.save()
                 for x in data.level_link.all():
                     linkdata.append({
                         'id': x.level_id,
@@ -303,7 +306,8 @@ class LevelSearchAdvance(APIView):
 									'ref': x.level_ref,
 									'link': '/level1/' + x.level_name + '/drill/' +str(x.level_id),
 									'state': x.level_state,
-									'date': x.Date
+									'date': x.Date,
+									'rank': x.rank
 								})
 							linkdata = []
 							for x in Document.objects.filter(document_name__contains=list3):
@@ -361,7 +365,8 @@ class LevelSearchAdvance(APIView):
 										'ref': x.level_ref,
 										'link': '/level1/' + x.level_name + '/drill/' + str(x.level_id),
 										'state': x.level_state,
-										'date': x.Date
+										'date': x.Date,
+										'rank': x.rank,
 									})
 								
 								linkdata = []
@@ -409,7 +414,8 @@ class LevelSearchAdvance(APIView):
 								'ref': x.level_ref,
 								'link': '/level1/' + x.level_name + '/drill/' + str(x.level_id),
 								'state': x.level_state,
-								'date': x.Date
+								'date': x.Date,
+								'rank': x.rank,
 							})
 						linkdata = []
 						for x in Document.objects.filter(document_name__contains=list3):
@@ -452,7 +458,8 @@ class LevelSearchAdvance(APIView):
 							'ref': x.level_ref,
 							'link': '/level1/' + a0 + '/drill/' + str(x.level_id),
 							'state': x.level_state,
-							'date': x.Date
+							'date': x.Date,
+							'rank': x.rank,
 						})
 					
 					linkdata = []

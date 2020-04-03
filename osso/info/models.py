@@ -21,6 +21,7 @@ class Level(models.Model):
 	level_link = models.ManyToManyField('Level', null=True, blank=True)
 	group = models.CharField(max_length=255, choices=group,default="")
 	Date = models.DateTimeField(default=datetime.now())
+	rank = models.IntegerField(default="0")
 
 	def __str__(self):
 		return self.level_state+' '+ self.level_name
