@@ -176,6 +176,8 @@ class LevelDrill(APIView):
                 print(3)
                 if Document.objects.filter(document_link__level_id=id).exists():
                     linkdata = []
+                    data.rank += 1
+                    data.save()
                     for x in Document.objects.filter(document_link__level_id=id):
                         linkdata.append({
                             'id': x.document_id,
